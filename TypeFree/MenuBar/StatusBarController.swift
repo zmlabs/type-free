@@ -9,6 +9,7 @@ final class StatusBarController: NSObject {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let menu = NSMenu()
     private let statusItemTitle = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+    private let updateMenuItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     #if DEBUG
         private var hudCatalogWindowController: HUDCatalogWindowController?
     #endif
@@ -54,6 +55,10 @@ final class StatusBarController: NSObject {
         statusItem.button?.toolTip = viewModel.statusTitle
     }
 
+    func setUpdateAvailable(_ isUpdateAvailable: Bool) {
+        updateMenuItem.title = StatusMenuViewModel.updateMenuTitle(isUpdateAvailable: isUpdateAvailable)
+    }
+
     private func configureStatusItem() {
         guard let button = statusItem.button else {
             return
@@ -81,13 +86,10 @@ final class StatusBarController: NSObject {
         menu.addItem(openItem)
 
         menu.addItem(.separator())
-        let updateItem = NSMenuItem(
-            title: "Check for Updates…",
-            action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)),
-            keyEquivalent: ""
-        )
-        updateItem.target = updaterController
-        menu.addItem(updateItem)
+        updateMenuItem.title = StatusMenuViewModel.updateMenuTitle(isUpdateAvailable: false)
+        updateMenuItem.action = #selector(SPUStandardUpdaterController.checkForUpdates(_:))
+        updateMenuItem.target = updaterController
+        menu.addItem(updateMenuItem)
 
         menu.addItem(.separator())
         let quitItem = NSMenuItem(title: viewModel.quitTitle, action: #selector(quit(_:)), keyEquivalent: "")

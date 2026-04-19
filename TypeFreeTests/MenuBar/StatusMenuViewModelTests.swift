@@ -20,6 +20,12 @@ struct StatusMenuViewModelTests {
     }
 
     @Test
+    func updateMenuTitleReflectsUpdateAvailability() {
+        #expect(StatusMenuViewModel.updateMenuTitle(isUpdateAvailable: false) == "Check for Updates")
+        #expect(StatusMenuViewModel.updateMenuTitle(isUpdateAvailable: true) == "Update Available")
+    }
+
+    @Test
     func initBuildsBlockedStatusWhenProviderOrPermissionsAreMissing() {
         let missingProvider = StatusMenuViewModel(
             permissionSnapshot: PermissionSnapshot(

@@ -47,15 +47,12 @@ final class AppBootstrap {
         let updaterCoordinator: UpdaterCoordinator
     }
 
-    func bootstrap(
-        launchConfiguration: LaunchConfiguration = .currentProcess
-    ) throws -> Runtime {
+    func bootstrap(launchConfiguration: LaunchConfiguration = .currentProcess) throws -> Runtime {
         let persistence = try makePersistenceStack(inMemory: launchConfiguration.usesInMemoryPersistence)
         let permissionStore = makePermissionStore()
         let audioInputDeviceProbe = SystemAudioInputDeviceProbe()
         let providerSecretVault = ProviderSecretVault()
         let mainWindowActionBridge = MainWindowActionBridge()
-        let appSettings = try persistence.appSettingsRepository.load()
         let updaterCoordinator = UpdaterCoordinator()
         let mainWindowCoordinator = makeMainWindowCoordinator(
             persistence: persistence,
@@ -72,6 +69,7 @@ final class AppBootstrap {
             audioInputDeviceProbe: audioInputDeviceProbe,
             updaterController: updaterCoordinator.controller
         )
+        connectUpdaterCoordinator(updaterCoordinator, to: statusBarController)
         let statusContext = makeWorkflowStatusContext(
             persistence: persistence,
             permissionStore: permissionStore,
@@ -79,8 +77,8 @@ final class AppBootstrap {
             statusBarController: statusBarController
         )
         let runtimeStatus = RuntimeStatus()
-        let interactionRuntime = makeInteractionRuntime(
-            appSettings: appSettings,
+        let interactionRuntime = try makeInteractionRuntime(
+            appSettingsRepository: persistence.appSettingsRepository,
             statusContext: statusContext,
             runtimeStatus: runtimeStatus,
             providerSecretVault: providerSecretVault,
@@ -141,6 +139,16 @@ private extension AppBootstrap {
         )
     }
 
+    private func connectUpdaterCoordinator(
+        _ updaterCoordinator: UpdaterCoordinator,
+        to statusBarController: StatusBarController
+    ) {
+        updaterCoordinator.onUpdateAvailabilityChanged = { [weak statusBarController] isUpdateAvailable in
+            statusBarController?.setUpdateAvailable(isUpdateAvailable)
+        }
+        statusBarController.setUpdateAvailable(updaterCoordinator.isUpdateAvailable)
+    }
+
     private func wireActionBridge(
         _ mainWindowActionBridge: MainWindowActionBridge,
         interactionRuntime: InteractionRuntime,
@@ -164,12 +172,13 @@ private extension AppBootstrap {
     }
 
     private func makeInteractionRuntime(
-        appSettings: AppSettings,
+        appSettingsRepository: AppSettingsRepository,
         statusContext: WorkflowStatusContext,
         runtimeStatus: RuntimeStatus,
         providerSecretVault: any ProviderSecretVaulting,
         disableHotkeyMonitoring: Bool
-    ) -> InteractionRuntime {
+    ) throws -> InteractionRuntime {
+        let appSettings = try appSettingsRepository.load()
         let audioLevelRelay = AudioLevelRelay()
         let hudPanelController = HUDPanelController(audioLevelRelay: audioLevelRelay)
         let tentativeCaptureDriver = AudioTentativeCaptureDriver(

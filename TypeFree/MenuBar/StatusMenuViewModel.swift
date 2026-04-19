@@ -72,4 +72,8 @@ struct StatusMenuViewModel: Equatable {
             "Insertion Failed"
         }
     }
+
+    nonisolated static func updateMenuTitle(isUpdateAvailable: Bool) -> String {
+        isUpdateAvailable ? "Update Available" : "Check for Updates"
+    }
 }
