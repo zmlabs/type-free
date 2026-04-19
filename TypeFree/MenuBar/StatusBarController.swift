@@ -64,7 +64,7 @@ final class StatusBarController: NSObject {
             return
         }
 
-        let image = NSImage(systemSymbolName: "character.textbox", accessibilityDescription: "TypeFree")
+        let image = NSImage(systemSymbolName: "waveform.and.mic", accessibilityDescription: "TypeFree")
         image?.isTemplate = true
         button.image = image
         button.toolTip = viewModel.statusTitle
