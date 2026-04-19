@@ -58,6 +58,11 @@ actor AudioCaptureActor: AudioCapturing {
 
         let audioEngine = engineFactory()
         let format = audioEngine.inputFormat
+
+        guard format.sampleRate > 0, format.channelCount > 0 else {
+            throw AudioCaptureError.audioDeviceUnavailable
+        }
+
         let fileURL = makeCaptureFileURL(sessionID: sessionID)
         let writer: AudioFileWriter
 

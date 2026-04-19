@@ -27,7 +27,7 @@ actor AudioTentativeCaptureDriver: TentativeCaptureDriving {
             )
         } catch let error as AudioCaptureError {
             switch error {
-            case .engineStartFailed, .captureAlreadyRunning:
+            case .engineStartFailed, .captureAlreadyRunning, .audioDeviceUnavailable:
                 throw TentativeCaptureError.engineFailure(error)
             case .writerInitializationFailed, .writeFailed, .bufferFormatMismatch:
                 throw TentativeCaptureError.writerFailure(error)
@@ -44,7 +44,11 @@ actor AudioTentativeCaptureDriver: TentativeCaptureDriving {
             return try await audioCapture.finishTentativeCapture(sessionID: sessionID)
         } catch let error as AudioCaptureError {
             switch error {
-            case .engineStartFailed, .captureAlreadyRunning, .missingActiveSession, .staleSession:
+            case .engineStartFailed,
+                 .captureAlreadyRunning,
+                 .missingActiveSession,
+                 .staleSession,
+                 .audioDeviceUnavailable:
                 throw TentativeCaptureError.engineFailure(error)
             case .writerInitializationFailed, .writeFailed, .bufferFormatMismatch:
                 throw TentativeCaptureError.writerFailure(error)

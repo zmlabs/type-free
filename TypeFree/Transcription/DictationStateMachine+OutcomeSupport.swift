@@ -3,7 +3,7 @@ import Foundation
 extension DictationStateMachine {
     nonisolated func shouldReset(phase: DictationPhase) -> Bool {
         switch phase {
-        case .canceled, .noSpeech, .permissionBlocked, .providerFailed, .insertionFailed:
+        case .canceled, .noSpeech, .permissionBlocked, .audioInputUnavailable, .providerFailed, .insertionFailed:
             true
         default:
             false
@@ -16,7 +16,7 @@ extension DictationStateMachine {
             true
         case .tentativeCapture, .recordingVisible:
             switch outcome {
-            case .permissionBlocked, .providerFailed:
+            case .permissionBlocked, .audioInputUnavailable, .providerFailed:
                 true
             default:
                 false
@@ -38,6 +38,8 @@ extension SessionOutcome {
             .noSpeech
         case .permissionBlocked:
             .permissionBlocked
+        case .audioInputUnavailable:
+            .audioInputUnavailable
         case let .providerFailed(failure):
             .providerFailed(failure)
         case let .insertionFailed(category):
@@ -55,6 +57,8 @@ extension SessionOutcome {
             .noSpeech
         case .permissionBlocked:
             .permissionBlocked
+        case .audioInputUnavailable:
+            .audioInputUnavailable
         case .providerFailed:
             .providerFailed
         case .insertionFailed:

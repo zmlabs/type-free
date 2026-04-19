@@ -7,6 +7,7 @@ extension AppBootstrap {
         mainWindowCoordinator: MainWindowCoordinator,
         persistence: PersistenceStack,
         permissionStore: PermissionStore,
+        audioInputDeviceProbe: any AudioInputDeviceProbe,
         updaterController: SPUStandardUpdaterController
     ) -> StatusBarController {
         StatusBarController(
@@ -16,11 +17,13 @@ extension AppBootstrap {
                 appSettingsRepository: persistence.appSettingsRepository,
                 permissionStore: permissionStore,
                 providerConfigurationRepository: persistence.providerConfigurationRepository,
+                audioInputDeviceProbe: audioInputDeviceProbe,
                 workflowPhase: .idle
             )
         )
     }
 
+    // swiftlint:disable:next function_parameter_count
     func makeRuntime(
         persistence: PersistenceStack,
         permissionStore: PermissionStore,
@@ -85,12 +88,17 @@ extension AppBootstrap {
     func makeReadinessProvider(
         permissionStore: PermissionStore,
         appSettingsRepository: AppSettingsRepository,
-        providerConfigurationRepository: ProviderConfigurationRepository
+        providerConfigurationRepository: ProviderConfigurationRepository,
+        audioInputDeviceProbe: any AudioInputDeviceProbe
     ) -> @MainActor @Sendable () async -> DictationWorkflowReadiness {
         {
             let snapshot = permissionStore.refresh()
             guard snapshot.isReadyForDictation else {
                 return .permissionBlocked
+            }
+
+            guard audioInputDeviceProbe.hasAvailableInput() else {
+                return .audioInputUnavailable
             }
 
             let settings = try? appSettingsRepository.load()
@@ -120,10 +128,24 @@ extension AppBootstrap {
         }
     }
 
+    static let repositoryURL = URL(string: "https://github.com/zmlabs/type-free")!
+
+    static func makeAboutViewModel(updaterCoordinator: UpdaterCoordinator) -> AboutViewModel {
+        let updaterController = updaterCoordinator.controller
+        return AboutViewModel(
+            appInfo: .current(),
+            repositoryURL: repositoryURL,
+            checkForUpdates: {
+                updaterController.checkForUpdates(nil)
+            }
+        )
+    }
+
     static func makeStatusMenuViewModel(
         appSettingsRepository: AppSettingsRepository,
         permissionStore: PermissionStore,
         providerConfigurationRepository: ProviderConfigurationRepository,
+        audioInputDeviceProbe: any AudioInputDeviceProbe,
         workflowPhase: DictationPhase
     ) -> StatusMenuViewModel {
         let settings = try? appSettingsRepository.load()
@@ -133,6 +155,7 @@ extension AppBootstrap {
         return StatusMenuViewModel(
             permissionSnapshot: permissionStore.refresh(),
             hasActiveProvider: providerConfiguration?.hasActiveCredentialReference == true,
+            hasAudioInputDevice: audioInputDeviceProbe.hasAvailableInput(),
             workflowPhase: workflowPhase
         )
     }

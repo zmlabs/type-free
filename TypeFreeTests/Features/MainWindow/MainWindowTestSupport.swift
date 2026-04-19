@@ -70,6 +70,18 @@ struct TestAccessibilityPermissionClient: AccessibilityPermissionClient {
     }
 }
 
+nonisolated struct TestAudioInputDeviceProbe: AudioInputDeviceProbe {
+    var isAvailable: Bool
+
+    init(isAvailable: Bool = true) {
+        self.isAvailable = isAvailable
+    }
+
+    func hasAvailableInput() -> Bool {
+        isAvailable
+    }
+}
+
 @MainActor
 func makePermissionStore(
     microphone: PermissionAuthorizationState = .granted,
@@ -78,5 +90,20 @@ func makePermissionStore(
     PermissionStore(
         microphoneClient: TestMicrophonePermissionClient(currentStatus: microphone),
         accessibilityClient: TestAccessibilityPermissionClient(currentStatus: accessibility)
+    )
+}
+
+@MainActor
+func makeTestAboutViewModel(
+    version: String = "1.0",
+    repositoryURL: URL = URL(filePath: "/"),
+    checkForUpdates: @escaping @MainActor () -> Void = {},
+    openURL: @escaping @MainActor (URL) -> Void = { _ in }
+) -> AboutViewModel {
+    AboutViewModel(
+        appInfo: AboutViewModel.AppInfo(name: "TypeFree", version: version, iconImage: nil),
+        repositoryURL: repositoryURL,
+        checkForUpdates: checkForUpdates,
+        openURL: openURL
     )
 }

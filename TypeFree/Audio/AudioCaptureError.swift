@@ -8,4 +8,5 @@ nonisolated enum AudioCaptureError: Error, Equatable {
     case engineStartFailed
     case bufferFormatMismatch
     case writeFailed
+    case audioDeviceUnavailable
 }

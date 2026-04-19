@@ -13,8 +13,10 @@ struct MainWindowCoordinatorTests {
             appSettingsRepository: repositories.appSettingsRepository,
             providerConfigurationRepository: repositories.providerConfigurationRepository,
             permissionStore: makePermissionStore(),
+            audioInputDeviceProbe: TestAudioInputDeviceProbe(isAvailable: true),
             secretVault: InMemorySecretVault(),
-            actionBridge: MainWindowActionBridge()
+            actionBridge: MainWindowActionBridge(),
+            aboutViewModel: makeTestAboutViewModel()
         )
 
         let firstController = coordinator.showWindow()
@@ -32,8 +34,10 @@ struct MainWindowCoordinatorTests {
             appSettingsRepository: repositories.appSettingsRepository,
             providerConfigurationRepository: repositories.providerConfigurationRepository,
             permissionStore: makePermissionStore(),
+            audioInputDeviceProbe: TestAudioInputDeviceProbe(isAvailable: true),
             secretVault: InMemorySecretVault(),
-            actionBridge: MainWindowActionBridge()
+            actionBridge: MainWindowActionBridge(),
+            aboutViewModel: makeTestAboutViewModel()
         )
 
         let firstController = coordinator.showWindow()

@@ -8,6 +8,7 @@ final class MainWindowRootViewModel {
     let hotkeySettingsViewModel: HotkeySettingsViewModel
     let providerSettingsViewModel: ProviderSettingsViewModel
     let permissionsViewModel: PermissionsViewModel
+    let aboutViewModel: AboutViewModel
 
     private(set) var selectedSection: MainWindowSection = .overview
 
@@ -18,13 +19,15 @@ final class MainWindowRootViewModel {
         overviewViewModel: OverviewViewModel,
         hotkeySettingsViewModel: HotkeySettingsViewModel,
         providerSettingsViewModel: ProviderSettingsViewModel,
-        permissionsViewModel: PermissionsViewModel
+        permissionsViewModel: PermissionsViewModel,
+        aboutViewModel: AboutViewModel
     ) {
         self.appSettingsRepository = appSettingsRepository
         self.overviewViewModel = overviewViewModel
         self.hotkeySettingsViewModel = hotkeySettingsViewModel
         self.providerSettingsViewModel = providerSettingsViewModel
         self.permissionsViewModel = permissionsViewModel
+        self.aboutViewModel = aboutViewModel
     }
 
     var navigationTitle: String {
@@ -68,6 +71,8 @@ final class MainWindowRootViewModel {
             providerSettingsViewModel.refresh()
         case .permissions:
             permissionsViewModel.refresh()
+        case .about:
+            break
         }
     }
 

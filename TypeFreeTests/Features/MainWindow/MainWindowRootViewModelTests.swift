@@ -15,6 +15,7 @@ struct MainWindowRootViewModelTests {
                 appSettingsRepository: repositories.appSettingsRepository,
                 providerConfigurationRepository: repositories.providerConfigurationRepository,
                 permissionStore: makePermissionStore(),
+                audioInputDeviceProbe: TestAudioInputDeviceProbe(isAvailable: true),
                 broadcaster: HotkeyChangeBroadcaster()
             ),
             hotkeySettingsViewModel: HotkeySettingsViewModel(
@@ -25,12 +26,13 @@ struct MainWindowRootViewModelTests {
                 repository: repositories.providerConfigurationRepository,
                 secretVault: InMemorySecretVault()
             ),
-            permissionsViewModel: PermissionsViewModel(permissionStore: makePermissionStore())
+            permissionsViewModel: PermissionsViewModel(permissionStore: makePermissionStore()),
+            aboutViewModel: makeTestAboutViewModel()
         )
 
         viewModel.refresh()
 
-        #expect(viewModel.sections == [.overview, .hotkey, .provider, .permissions])
+        #expect(viewModel.sections == [.overview, .hotkey, .provider, .permissions, .about])
         #expect(viewModel.selectedSection == .provider)
         #expect(viewModel.navigationTitle == MainWindowSection.provider.title)
     }
@@ -44,6 +46,7 @@ struct MainWindowRootViewModelTests {
                 appSettingsRepository: repositories.appSettingsRepository,
                 providerConfigurationRepository: repositories.providerConfigurationRepository,
                 permissionStore: makePermissionStore(),
+                audioInputDeviceProbe: TestAudioInputDeviceProbe(isAvailable: true),
                 broadcaster: HotkeyChangeBroadcaster()
             ),
             hotkeySettingsViewModel: HotkeySettingsViewModel(
@@ -54,7 +57,8 @@ struct MainWindowRootViewModelTests {
                 repository: repositories.providerConfigurationRepository,
                 secretVault: InMemorySecretVault()
             ),
-            permissionsViewModel: PermissionsViewModel(permissionStore: makePermissionStore())
+            permissionsViewModel: PermissionsViewModel(permissionStore: makePermissionStore()),
+            aboutViewModel: makeTestAboutViewModel()
         )
 
         viewModel.select(.permissions)

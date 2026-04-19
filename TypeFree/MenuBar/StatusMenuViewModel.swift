@@ -8,11 +8,13 @@ struct StatusMenuViewModel: Equatable {
     nonisolated init(
         permissionSnapshot: PermissionSnapshot,
         hasActiveProvider: Bool,
+        hasAudioInputDevice: Bool = true,
         workflowPhase: DictationPhase = .idle
     ) {
         statusTitle = Self.makeStatusTitle(
             permissionSnapshot: permissionSnapshot,
             hasActiveProvider: hasActiveProvider,
+            hasAudioInputDevice: hasAudioInputDevice,
             workflowPhase: workflowPhase
         )
         openSettingsTitle = "Settings…"
@@ -22,6 +24,7 @@ struct StatusMenuViewModel: Equatable {
     nonisolated static func makeStatusTitle(
         permissionSnapshot: PermissionSnapshot,
         hasActiveProvider: Bool,
+        hasAudioInputDevice: Bool,
         workflowPhase: DictationPhase
     ) -> String {
         if let runtimeTitle = runtimeStatusTitle(for: workflowPhase) {
@@ -34,6 +37,10 @@ struct StatusMenuViewModel: Equatable {
 
         if permissionSnapshot.accessibility != .granted {
             return "Accessibility Required"
+        }
+
+        if !hasAudioInputDevice {
+            return "No Audio Input"
         }
 
         if !hasActiveProvider {
@@ -57,6 +64,8 @@ struct StatusMenuViewModel: Equatable {
             "No Speech"
         case .permissionBlocked:
             "Permission Blocked"
+        case .audioInputUnavailable:
+            "No Audio Input"
         case .providerFailed:
             "Provider Failed"
         case .insertionFailed:

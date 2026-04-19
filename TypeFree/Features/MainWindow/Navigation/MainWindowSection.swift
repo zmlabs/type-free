@@ -5,6 +5,7 @@ enum MainWindowSection: String, CaseIterable, Identifiable {
     case hotkey
     case provider
     case permissions
+    case about
 
     var id: String {
         rawValue
@@ -20,6 +21,8 @@ enum MainWindowSection: String, CaseIterable, Identifiable {
             "Provider"
         case .permissions:
             "Permissions"
+        case .about:
+            "About"
         }
     }
 
@@ -33,6 +36,8 @@ enum MainWindowSection: String, CaseIterable, Identifiable {
             "network"
         case .permissions:
             "lock.shield"
+        case .about:
+            "info.circle"
         }
     }
 
@@ -46,6 +51,8 @@ enum MainWindowSection: String, CaseIterable, Identifiable {
             "main-window.sidebar.provider"
         case .permissions:
             "main-window.sidebar.permissions"
+        case .about:
+            "main-window.sidebar.about"
         }
     }
 }

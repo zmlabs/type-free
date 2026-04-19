@@ -3,6 +3,7 @@ import Foundation
 enum DictationWorkflowReadiness {
     case ready
     case permissionBlocked
+    case audioInputUnavailable
     case providerUnavailable
 }
 
@@ -47,6 +48,13 @@ actor DictationWorkflowActor {
                 await process(.hotkeyDown(timestamp: timestamp, activationScreenID: activationScreenID))
             case .permissionBlocked:
                 await process(.startRejected(activationScreenID: activationScreenID, outcome: .permissionBlocked))
+            case .audioInputUnavailable:
+                await process(
+                    .startRejected(
+                        activationScreenID: activationScreenID,
+                        outcome: .audioInputUnavailable
+                    )
+                )
             case .providerUnavailable:
                 await process(
                     .startRejected(

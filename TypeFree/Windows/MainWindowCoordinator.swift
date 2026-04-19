@@ -9,14 +9,17 @@ final class MainWindowCoordinator {
         appSettingsRepository: AppSettingsRepository,
         providerConfigurationRepository: ProviderConfigurationRepository,
         permissionStore: PermissionStore,
+        audioInputDeviceProbe: any AudioInputDeviceProbe,
         secretVault: any ProviderSecretVaulting,
-        actionBridge: MainWindowActionBridge
+        actionBridge: MainWindowActionBridge,
+        aboutViewModel: AboutViewModel
     ) {
         let broadcaster = HotkeyChangeBroadcaster()
         let overviewViewModel = OverviewViewModel(
             appSettingsRepository: appSettingsRepository,
             providerConfigurationRepository: providerConfigurationRepository,
             permissionStore: permissionStore,
+            audioInputDeviceProbe: audioInputDeviceProbe,
             broadcaster: broadcaster
         )
         let hotkeySettingsViewModel = HotkeySettingsViewModel(
@@ -55,7 +58,8 @@ final class MainWindowCoordinator {
             overviewViewModel: overviewViewModel,
             hotkeySettingsViewModel: hotkeySettingsViewModel,
             providerSettingsViewModel: providerSettingsViewModel,
-            permissionsViewModel: permissionsViewModel
+            permissionsViewModel: permissionsViewModel,
+            aboutViewModel: aboutViewModel
         )
     }
 

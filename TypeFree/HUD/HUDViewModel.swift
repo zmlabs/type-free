@@ -63,6 +63,8 @@ final class HUDViewModel {
             "No speech heard"
         case .permissionBlocked:
             "Permission needed"
+        case .audioInputUnavailable:
+            "No Audio Input Device"
         case let .providerFailed(failure):
             providerMessage(for: failure)
         case let .insertionFailed(category):

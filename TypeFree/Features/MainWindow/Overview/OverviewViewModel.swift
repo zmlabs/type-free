@@ -5,6 +5,7 @@ enum OverviewReadiness: Equatable {
     case ready
     case microphoneRequired
     case accessibilityRequired
+    case audioInputUnavailable
     case providerNotConfigured
 
     var title: String {
@@ -12,6 +13,7 @@ enum OverviewReadiness: Equatable {
         case .ready: "Ready"
         case .microphoneRequired: "Microphone Required"
         case .accessibilityRequired: "Accessibility Required"
+        case .audioInputUnavailable: "No Audio Input Device"
         case .providerNotConfigured: "Provider Not Configured"
         }
     }
@@ -21,6 +23,7 @@ enum OverviewReadiness: Equatable {
         case .ready: "Hold the trigger key to start dictation."
         case .microphoneRequired: "Grant Microphone access to enable recording."
         case .accessibilityRequired: "Grant Accessibility access to insert transcribed text."
+        case .audioInputUnavailable: "No Audio Input Device"
         case .providerNotConfigured: "Set up a provider to enable dictation."
         }
     }
@@ -54,17 +57,20 @@ final class OverviewViewModel {
     private let appSettingsRepository: AppSettingsRepository
     private let providerConfigurationRepository: ProviderConfigurationRepository
     private let permissionStore: PermissionStore
+    private let audioInputDeviceProbe: any AudioInputDeviceProbe
     private let broadcaster: HotkeyChangeBroadcaster
 
     init(
         appSettingsRepository: AppSettingsRepository,
         providerConfigurationRepository: ProviderConfigurationRepository,
         permissionStore: PermissionStore,
+        audioInputDeviceProbe: any AudioInputDeviceProbe,
         broadcaster: HotkeyChangeBroadcaster
     ) {
         self.appSettingsRepository = appSettingsRepository
         self.providerConfigurationRepository = providerConfigurationRepository
         self.permissionStore = permissionStore
+        self.audioInputDeviceProbe = audioInputDeviceProbe
         self.broadcaster = broadcaster
     }
 
@@ -123,6 +129,8 @@ final class OverviewViewModel {
             readiness = .microphoneRequired
         } else if snapshot.accessibility != .granted {
             readiness = .accessibilityRequired
+        } else if !audioInputDeviceProbe.hasAvailableInput() {
+            readiness = .audioInputUnavailable
         } else if providerConfiguration?.hasActiveCredentialReference != true {
             readiness = .providerNotConfigured
         } else {

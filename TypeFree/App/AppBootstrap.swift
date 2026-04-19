@@ -30,6 +30,7 @@ final class AppBootstrap {
         let appSettingsRepository: AppSettingsRepository
         let permissionStore: PermissionStore
         let providerConfigurationRepository: ProviderConfigurationRepository
+        let audioInputDeviceProbe: any AudioInputDeviceProbe
         let statusBarController: StatusBarController
     }
 
@@ -51,27 +52,30 @@ final class AppBootstrap {
     ) throws -> Runtime {
         let persistence = try makePersistenceStack(inMemory: launchConfiguration.usesInMemoryPersistence)
         let permissionStore = makePermissionStore()
+        let audioInputDeviceProbe = SystemAudioInputDeviceProbe()
         let providerSecretVault = ProviderSecretVault()
         let mainWindowActionBridge = MainWindowActionBridge()
         let appSettings = try persistence.appSettingsRepository.load()
         let updaterCoordinator = UpdaterCoordinator()
-        let mainWindowCoordinator = MainWindowCoordinator(
-            appSettingsRepository: persistence.appSettingsRepository,
-            providerConfigurationRepository: persistence.providerConfigurationRepository,
+        let mainWindowCoordinator = makeMainWindowCoordinator(
+            persistence: persistence,
             permissionStore: permissionStore,
-            secretVault: providerSecretVault,
-            actionBridge: mainWindowActionBridge
+            audioInputDeviceProbe: audioInputDeviceProbe,
+            providerSecretVault: providerSecretVault,
+            mainWindowActionBridge: mainWindowActionBridge,
+            updaterCoordinator: updaterCoordinator
         )
         let statusBarController = makeStatusBarController(
             mainWindowCoordinator: mainWindowCoordinator,
             persistence: persistence,
             permissionStore: permissionStore,
+            audioInputDeviceProbe: audioInputDeviceProbe,
             updaterController: updaterCoordinator.controller
         )
-        let statusContext = WorkflowStatusContext(
-            appSettingsRepository: persistence.appSettingsRepository,
+        let statusContext = makeWorkflowStatusContext(
+            persistence: persistence,
             permissionStore: permissionStore,
-            providerConfigurationRepository: persistence.providerConfigurationRepository,
+            audioInputDeviceProbe: audioInputDeviceProbe,
             statusBarController: statusBarController
         )
         let runtimeStatus = RuntimeStatus()
@@ -102,6 +106,41 @@ final class AppBootstrap {
 }
 
 private extension AppBootstrap {
+    // swiftlint:disable:next function_parameter_count
+    private func makeMainWindowCoordinator(
+        persistence: PersistenceStack,
+        permissionStore: PermissionStore,
+        audioInputDeviceProbe: any AudioInputDeviceProbe,
+        providerSecretVault: any ProviderSecretVaulting,
+        mainWindowActionBridge: MainWindowActionBridge,
+        updaterCoordinator: UpdaterCoordinator
+    ) -> MainWindowCoordinator {
+        MainWindowCoordinator(
+            appSettingsRepository: persistence.appSettingsRepository,
+            providerConfigurationRepository: persistence.providerConfigurationRepository,
+            permissionStore: permissionStore,
+            audioInputDeviceProbe: audioInputDeviceProbe,
+            secretVault: providerSecretVault,
+            actionBridge: mainWindowActionBridge,
+            aboutViewModel: Self.makeAboutViewModel(updaterCoordinator: updaterCoordinator)
+        )
+    }
+
+    private func makeWorkflowStatusContext(
+        persistence: PersistenceStack,
+        permissionStore: PermissionStore,
+        audioInputDeviceProbe: any AudioInputDeviceProbe,
+        statusBarController: StatusBarController
+    ) -> WorkflowStatusContext {
+        WorkflowStatusContext(
+            appSettingsRepository: persistence.appSettingsRepository,
+            permissionStore: permissionStore,
+            providerConfigurationRepository: persistence.providerConfigurationRepository,
+            audioInputDeviceProbe: audioInputDeviceProbe,
+            statusBarController: statusBarController
+        )
+    }
+
     private func wireActionBridge(
         _ mainWindowActionBridge: MainWindowActionBridge,
         interactionRuntime: InteractionRuntime,
@@ -117,6 +156,7 @@ private extension AppBootstrap {
                     appSettingsRepository: statusContext.appSettingsRepository,
                     permissionStore: statusContext.permissionStore,
                     providerConfigurationRepository: statusContext.providerConfigurationRepository,
+                    audioInputDeviceProbe: statusContext.audioInputDeviceProbe,
                     workflowPhase: runtimeStatus.phase
                 )
             )
@@ -177,7 +217,8 @@ private extension AppBootstrap {
             readinessProvider: makeReadinessProvider(
                 permissionStore: statusContext.permissionStore,
                 appSettingsRepository: statusContext.appSettingsRepository,
-                providerConfigurationRepository: statusContext.providerConfigurationRepository
+                providerConfigurationRepository: statusContext.providerConfigurationRepository,
+                audioInputDeviceProbe: statusContext.audioInputDeviceProbe
             ),
             phaseObserver: { phase in
                 runtimeStatus.phase = phase
@@ -186,6 +227,7 @@ private extension AppBootstrap {
                         appSettingsRepository: statusContext.appSettingsRepository,
                         permissionStore: statusContext.permissionStore,
                         providerConfigurationRepository: statusContext.providerConfigurationRepository,
+                        audioInputDeviceProbe: statusContext.audioInputDeviceProbe,
                         workflowPhase: phase
                     )
                 )

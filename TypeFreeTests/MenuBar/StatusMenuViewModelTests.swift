@@ -33,6 +33,20 @@ struct StatusMenuViewModelTests {
     }
 
     @Test
+    func initReportsNoAudioInputWhenProbeReportsMissingDevice() {
+        let viewModel = StatusMenuViewModel(
+            permissionSnapshot: PermissionSnapshot(
+                microphone: .granted,
+                accessibility: .granted
+            ),
+            hasActiveProvider: true,
+            hasAudioInputDevice: false
+        )
+
+        #expect(viewModel.statusTitle == "No Audio Input")
+    }
+
+    @Test
     func initPrefersRuntimeWorkflowStateWhenDictationIsActiveOrFailed() {
         let recording = StatusMenuViewModel(
             permissionSnapshot: PermissionSnapshot(

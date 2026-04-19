@@ -54,6 +54,8 @@ struct HUDRootView: View {
             "bubble.left.and.exclamationmark.bubble.right"
         case .permissionBlocked:
             "lock.fill"
+        case .audioInputUnavailable:
+            "mic.slash.fill"
         case let .providerFailed(failure):
             providerSymbol(for: failure.category)
         case let .insertionFailed(category):
@@ -86,7 +88,7 @@ struct HUDRootView: View {
             .orange
         case .hidden, .tentativeCapture, .recording:
             .clear
-        case .noSpeech, .permissionBlocked, .providerFailed, .insertionFailed:
+        case .noSpeech, .permissionBlocked, .audioInputUnavailable, .providerFailed, .insertionFailed:
             .orange
         }
     }

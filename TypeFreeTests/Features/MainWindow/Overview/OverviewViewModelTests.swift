@@ -17,6 +17,7 @@ struct OverviewViewModelTests {
             appSettingsRepository: repositories.appSettingsRepository,
             providerConfigurationRepository: repositories.providerConfigurationRepository,
             permissionStore: makePermissionStore(),
+            audioInputDeviceProbe: TestAudioInputDeviceProbe(isAvailable: true),
             broadcaster: HotkeyChangeBroadcaster()
         )
 
@@ -24,6 +25,43 @@ struct OverviewViewModelTests {
 
         #expect(viewModel.activeProvider == .qwen3ASR)
         #expect(viewModel.readiness == .ready)
+    }
+
+    @Test @MainActor
+    func refreshReportsAudioInputUnavailableWhenProbeReportsNoDevice() throws {
+        let repositories = try makeInMemoryRepositories()
+        let openAI = try repositories.providerConfigurationRepository.load(kind: .openAICompatible)
+        openAI.apiKeyReference = "openai-reference"
+        try repositories.providerConfigurationRepository.save(openAI)
+
+        let viewModel = OverviewViewModel(
+            appSettingsRepository: repositories.appSettingsRepository,
+            providerConfigurationRepository: repositories.providerConfigurationRepository,
+            permissionStore: makePermissionStore(),
+            audioInputDeviceProbe: TestAudioInputDeviceProbe(isAvailable: false),
+            broadcaster: HotkeyChangeBroadcaster()
+        )
+
+        viewModel.refresh()
+
+        #expect(viewModel.readiness == .audioInputUnavailable)
+    }
+
+    @Test @MainActor
+    func refreshPrefersMicrophoneRequirementOverAudioInputUnavailable() throws {
+        let repositories = try makeInMemoryRepositories()
+
+        let viewModel = OverviewViewModel(
+            appSettingsRepository: repositories.appSettingsRepository,
+            providerConfigurationRepository: repositories.providerConfigurationRepository,
+            permissionStore: makePermissionStore(microphone: .denied),
+            audioInputDeviceProbe: TestAudioInputDeviceProbe(isAvailable: false),
+            broadcaster: HotkeyChangeBroadcaster()
+        )
+
+        viewModel.refresh()
+
+        #expect(viewModel.readiness == .microphoneRequired)
     }
 
     @Test @MainActor
@@ -40,6 +78,7 @@ struct OverviewViewModelTests {
             appSettingsRepository: repositories.appSettingsRepository,
             providerConfigurationRepository: repositories.providerConfigurationRepository,
             permissionStore: makePermissionStore(),
+            audioInputDeviceProbe: TestAudioInputDeviceProbe(isAvailable: true),
             broadcaster: HotkeyChangeBroadcaster()
         )
 

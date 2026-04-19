@@ -8,6 +8,7 @@ nonisolated enum DictationPhase: String, Equatable, Codable, CaseIterable {
     case canceled
     case noSpeech
     case permissionBlocked
+    case audioInputUnavailable
     case providerFailed
     case insertionFailed
 }

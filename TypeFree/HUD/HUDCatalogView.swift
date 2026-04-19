@@ -9,6 +9,7 @@
             ("canceled", .canceled),
             ("noSpeech", .noSpeech),
             ("permissionBlocked", .permissionBlocked),
+            ("audioInputUnavailable", .audioInputUnavailable),
             ("provider.configuration", .providerFailed(.configuration())),
             ("provider.unauthorized", .providerFailed(.unauthorized())),
             ("provider.timeout", .providerFailed(.timeout())),

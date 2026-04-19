@@ -56,6 +56,53 @@ struct AudioCaptureActorTests {
     }
 
     @Test
+    func startTentativeCaptureThrowsWhenInputFormatHasZeroSampleRate() async throws {
+        let invalidFormat = try #require(Self.makeInvalidFormat(sampleRate: 0, channels: 2))
+        let engine = TestAudioCaptureEngine(format: invalidFormat)
+        let actor = AudioCaptureActor(
+            engineFactory: { engine },
+            temporaryDirectoryProvider: { FileManager.default.temporaryDirectory }
+        )
+
+        await #expect(throws: AudioCaptureError.audioDeviceUnavailable) {
+            try await actor.startTentativeCapture(sessionID: UUID())
+        }
+        #expect(engine.installTapCallCount == 0)
+        #expect(engine.startCallCount == 0)
+    }
+
+    @Test
+    func startTentativeCaptureThrowsWhenInputFormatHasZeroChannelCount() async throws {
+        let invalidFormat = try #require(Self.makeInvalidFormat(sampleRate: 44100, channels: 0))
+        let engine = TestAudioCaptureEngine(format: invalidFormat)
+        let actor = AudioCaptureActor(
+            engineFactory: { engine },
+            temporaryDirectoryProvider: { FileManager.default.temporaryDirectory }
+        )
+
+        await #expect(throws: AudioCaptureError.audioDeviceUnavailable) {
+            try await actor.startTentativeCapture(sessionID: UUID())
+        }
+        #expect(engine.installTapCallCount == 0)
+        #expect(engine.startCallCount == 0)
+    }
+
+    private static func makeInvalidFormat(sampleRate: Double, channels: UInt32) -> AVAudioFormat? {
+        var description = AudioStreamBasicDescription(
+            mSampleRate: sampleRate,
+            mFormatID: kAudioFormatLinearPCM,
+            mFormatFlags: kAudioFormatFlagIsFloat | kAudioFormatFlagIsNonInterleaved,
+            mBytesPerPacket: 4,
+            mFramesPerPacket: 1,
+            mBytesPerFrame: 4,
+            mChannelsPerFrame: channels,
+            mBitsPerChannel: 32,
+            mReserved: 0
+        )
+        return AVAudioFormat(streamDescription: &description)
+    }
+
+    @Test
     func audioTapUpdatesRelayWithNonZeroLevel() async throws {
         let format = try #require(AVAudioFormat(standardFormatWithSampleRate: 16000, channels: 1))
         let engine = TestAudioCaptureEngine(format: format)

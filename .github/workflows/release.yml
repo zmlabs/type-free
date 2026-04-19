@@ -28,6 +28,9 @@ jobs:
       - name: Xcode version
         run: xcodebuild -version
 
+      - name: Install SwiftLint and SwiftFormat
+        run: brew install swiftlint swiftformat
+
       - name: Import Developer ID certificate
         uses: apple-actions/import-codesign-certs@v3
         with:
@@ -118,8 +121,12 @@ jobs:
           mkdir -p "${{ env.UPDATES_DIR }}"
           cp "${{ env.DMG_PATH }}" "${{ env.UPDATES_DIR }}/"
           DOWNLOAD_URL_PREFIX="https://github.com/zmlabs/type-free/releases/download/${{ github.ref_name }}/"
-          printf '%s' "$SPARKLE_ED25519_KEY" | "$SPARKLE_BIN/generate_appcast" \
-            --ed-key-file - \
+          python3 -c 'exec("import base64\nimport os\nkey = os.environ[\"SPARKLE_ED25519_KEY\"].strip()\ntry:\n    base64.b64decode(key, validate=True)\nexcept Exception as exc:\n    raise SystemExit(\"SPARKLE_ED25519_KEY is not valid base64. Store the exact contents exported by `generate_keys -x`.\") from exc\n")'
+          tmp_key_file="$(mktemp)"
+          trap 'rm -f "$tmp_key_file"' EXIT
+          printf '%s' "$SPARKLE_ED25519_KEY" > "$tmp_key_file"
+          "$SPARKLE_BIN/generate_appcast" \
+            --ed-key-file "$tmp_key_file" \
             --download-url-prefix "$DOWNLOAD_URL_PREFIX" \
             "${{ env.UPDATES_DIR }}"
 

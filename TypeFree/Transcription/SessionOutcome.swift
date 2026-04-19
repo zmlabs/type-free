@@ -5,6 +5,7 @@ nonisolated enum SessionOutcome: Equatable {
     case canceled
     case noSpeech
     case permissionBlocked
+    case audioInputUnavailable
     case providerFailed(ProviderFailure)
     case insertionFailed(InsertionFailureCategory)
 }

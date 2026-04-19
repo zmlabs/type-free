@@ -32,6 +32,8 @@ struct MainWindowRootView: View {
                 ProviderSettingsView(viewModel: viewModel.providerSettingsViewModel)
             case .permissions:
                 PermissionsView(viewModel: viewModel.permissionsViewModel)
+            case .about:
+                AboutView(viewModel: viewModel.aboutViewModel)
             }
         }
         .navigationTitle(viewModel.navigationTitle)
