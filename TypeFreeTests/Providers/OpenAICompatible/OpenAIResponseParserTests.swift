@@ -31,7 +31,7 @@ struct OpenAIResponseParserTests {
         } catch let error as TranscriptionProviderError {
             #expect(
                 error == .invalidResponse(
-                    message: "Provider 返回体缺少 text 字段：Missing Authorization header"
+                    message: "Provider response is missing the text field: Missing Authorization header"
                 )
             )
         } catch {

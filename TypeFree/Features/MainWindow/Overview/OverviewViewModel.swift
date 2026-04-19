@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 enum OverviewReadiness: Equatable {
     case ready
@@ -8,7 +9,7 @@ enum OverviewReadiness: Equatable {
     case audioInputUnavailable
     case providerNotConfigured
 
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .ready: "Ready"
         case .microphoneRequired: "Microphone Required"
@@ -18,7 +19,7 @@ enum OverviewReadiness: Equatable {
         }
     }
 
-    var message: String {
+    var message: LocalizedStringKey {
         switch self {
         case .ready: "Hold the trigger key to start dictation."
         case .microphoneRequired: "Grant Microphone access to enable recording."

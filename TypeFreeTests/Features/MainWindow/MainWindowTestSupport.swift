@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import SwiftUI
 @testable import TypeFree
 
 struct InMemoryRepositories {

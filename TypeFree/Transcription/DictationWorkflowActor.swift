@@ -60,7 +60,10 @@ actor DictationWorkflowActor {
                     .startRejected(
                         activationScreenID: activationScreenID,
                         outcome: .providerFailed(
-                            .configuration(detail: "请在 Provider 设置中检查 Endpoint URL、模型标识和 API Key。")
+                            .configuration(
+                                detail:
+                                "Please check the endpoint URL, model identifier, and API key in Provider settings."
+                            )
                         )
                     )
                 )

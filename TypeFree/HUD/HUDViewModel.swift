@@ -56,15 +56,15 @@ final class HUDViewModel {
         case .hidden, .tentativeCapture, .recording:
             ""
         case .transcribing:
-            "Transcribing..."
+            String(localized: "transcribing")
         case .canceled:
-            "Canceled"
+            String(localized: "canceled")
         case .noSpeech:
-            "No speech heard"
+            String(localized: "noSpeech")
         case .permissionBlocked:
-            "Permission needed"
+            String(localized: "permissionBlocked")
         case .audioInputUnavailable:
-            "No Audio Input Device"
+            String(localized: "audioInputUnavailable")
         case let .providerFailed(failure):
             providerMessage(for: failure)
         case let .insertionFailed(category):
@@ -77,19 +77,19 @@ final class HUDViewModel {
             return detail
         }
         return switch failure.category {
-        case .configuration: "Setup incomplete"
-        case .unauthorized: "Invalid API key"
-        case .timeout: "Timed out"
-        case .unavailable: "Service unreachable"
-        case .invalidResponse: "Unexpected response"
+        case .configuration: String(localized: "provider.configuration")
+        case .unauthorized: String(localized: "provider.unauthorized")
+        case .timeout: String(localized: "provider.timeout")
+        case .unavailable: String(localized: "provider.unavailable")
+        case .invalidResponse: String(localized: "provider.invalidResponse")
         }
     }
 
     private func insertionMessage(for category: InsertionFailureCategory) -> String {
         switch category {
-        case .targetUnavailable: "No text field found"
-        case .targetNotEditable: "Field not editable"
-        case .writeFailed: "Input rejected"
+        case .targetUnavailable: String(localized: "insertion.targetUnavailable")
+        case .targetNotEditable: String(localized: "insertion.targetNotEditable")
+        case .writeFailed: String(localized: "insertion.writeFailed")
         }
     }
 }

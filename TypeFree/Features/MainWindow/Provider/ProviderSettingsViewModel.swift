@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 @MainActor @Observable
 final class ProviderSettingsViewModel {
@@ -12,7 +13,7 @@ final class ProviderSettingsViewModel {
     var enableITN = ProviderKind.openAICompatible.defaultEnableITN
     var requestTimeoutSeconds = 30
     var apiKey = ""
-    private(set) var saveMessage = ""
+    private(set) var saveMessage: LocalizedStringKey = ""
     private(set) var saveMessageLevel: ProviderSettingsSaveMessageLevel = .success
     private(set) var isSaving = false
     let speechAnalyzerAssets = SpeechAnalyzerAssetCoordinator()

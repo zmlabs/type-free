@@ -10,24 +10,24 @@ struct Qwen3ASRResponseParserTests {
         let output = try parser.parse(
             data: Data(
                 #"""
-                {
-                  "output": {
+                    {
+                    "output": {
                     "choices": [
-                      {
-                        "message": {
-                          "content": [
-                            {
-                              "text": " hello qwen "
-                            }
-                          ]
-                        }
-                      }
+                    {
+                    "message": {
+                    "content": [
+                    {
+                    "text": " hello qwen "
+                    }
                     ]
-                  },
-                  "usage": {
+                    }
+                    }
+                    ]
+                    },
+                    "usage": {
                     "seconds": 1.25
-                  }
-                }
+                    }
+                    }
                 """#.utf8
             )
         )
@@ -42,21 +42,21 @@ struct Qwen3ASRResponseParserTests {
         let output = try parser.parse(
             data: Data(
                 #"""
-                {
-                  "output": {
+                    {
+                    "output": {
                     "choices": [
-                      {
-                        "message": {
-                          "content": [
-                            {
-                              "text": "   "
-                            }
-                          ]
-                        }
-                      }
+                    {
+                    "message": {
+                    "content": [
+                    {
+                    "text": "   "
+                    }
                     ]
-                  }
-                }
+                    }
+                    }
+                    ]
+                    }
+                    }
                 """#.utf8
             )
         )
@@ -68,15 +68,18 @@ struct Qwen3ASRResponseParserTests {
     func parseRejectsPayloadsWithoutUsableTranscriptText() {
         let parser = Qwen3ASRResponseParser()
 
-        #expect(throws: TranscriptionProviderError
-            .invalidResponse(message: "Provider 返回体缺少 output.choices[0].message.content[0].text 字段：Invalid API key"))
-        {
+        #expect(
+            throws: TranscriptionProviderError.invalidResponse(
+                message:
+                "The provider response is missing the output.choices[0].message.content[0].text field: Invalid API key"
+            )
+        ) {
             _ = try parser.parse(
                 data: Data(
                     #"""
-                    {
-                      "message": "Invalid API key"
-                    }
+                        {
+                        "message": "Invalid API key"
+                        }
                     """#.utf8
                 )
             )

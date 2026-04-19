@@ -26,7 +26,7 @@ struct PermissionsView: View {
             } header: {
                 Text("System Permissions")
             } footer: {
-                if !viewModel.readinessMessage.isEmpty {
+                if viewModel.readinessMessage != "" {
                     Text(viewModel.readinessMessage)
                 }
             }

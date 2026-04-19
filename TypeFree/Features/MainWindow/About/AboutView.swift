@@ -53,7 +53,7 @@ struct AboutView: View {
             Button {
                 viewModel.checkForUpdates()
             } label: {
-                Text("Check for Updates…")
+                Text("Check for Updates")
                     .frame(maxWidth: .infinity)
             }
             .accessibilityIdentifier(MainWindowAccessibilityIdentifiers.aboutCheckForUpdates)

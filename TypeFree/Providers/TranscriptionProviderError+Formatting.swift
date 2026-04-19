@@ -4,20 +4,22 @@ extension TranscriptionProviderError {
     var failure: ProviderFailure? {
         switch self {
         case let .unsupportedProviderKind(kind):
-            .configuration(detail: "不支持的 Provider 类型：\(kind)。")
+            .configuration(detail: "Unsupported provider type: \(kind).")
         case .invalidConfiguration:
-            .configuration(detail: "Provider 配置无效，请检查 Endpoint URL、模型标识和 API Key。")
+            .configuration(
+                detail: "Invalid provider configuration. Check the endpoint URL, model identifier, and API key."
+            )
         case .missingCredential:
-            .configuration(detail: "未读取到有效的 API Key，请在 Provider 设置中重新输入并保存。")
+            .configuration(detail: "No valid API key was found. Re-enter and save it in Provider settings.")
         case .unauthorized:
-            .unauthorized(detail: "Provider 鉴权失败，请检查 API Key 和 Authorization 头。")
+            .unauthorized(detail: "Provider authorization failed. Check the API key and Authorization header.")
         case .timeout:
-            .timeout(detail: "请求超时，请检查服务状态和网络连接。")
+            .timeout(detail: "The request timed out. Check the service status and network connection.")
         case let .transport(diagnostics):
             Self.transportFailure(from: diagnostics)
         case let .invalidResponse(message):
             .invalidResponse(
-                detail: message ?? "Provider 返回体不符合 OpenAI 转录兼容格式。"
+                detail: message ?? "The provider response does not match the OpenAI transcription-compatible format."
             )
         case .cancelled:
             nil
@@ -71,18 +73,18 @@ private extension TranscriptionProviderError {
         let snippet = normalizedSnippet(diagnostics.responseSnippet ?? diagnostics.underlyingError)
 
         if let statusCode = diagnostics.statusCode, let snippet {
-            return "服务返回 \(statusCode)：\(snippet)"
+            return "The service returned \(statusCode): \(snippet)"
         }
 
         if let statusCode = diagnostics.statusCode {
-            return "服务返回 \(statusCode)。"
+            return "The service returned \(statusCode)."
         }
 
         if let snippet = normalizedSnippet(diagnostics.responseSnippet ?? diagnostics.underlyingError) {
-            return "请求失败：\(snippet)"
+            return "The request failed: \(snippet)"
         }
 
-        return "请求失败，请检查服务端日志和网络连接。"
+        return "The request failed. Check the service logs and network connection."
     }
 
     static func formattedUnauthorizedDetail(
@@ -91,18 +93,18 @@ private extension TranscriptionProviderError {
         let snippet = normalizedSnippet(diagnostics.responseSnippet ?? diagnostics.underlyingError)
 
         if let statusCode = diagnostics.statusCode, let snippet {
-            return "服务返回 \(statusCode)：\(snippet)"
+            return "The service returned \(statusCode): \(snippet)"
         }
 
         if let statusCode = diagnostics.statusCode {
-            return "服务返回 \(statusCode)，请检查 API Key 和 Authorization 头。"
+            return "The service returned \(statusCode). Check the API key and Authorization header."
         }
 
         if let snippet = normalizedSnippet(diagnostics.responseSnippet ?? diagnostics.underlyingError) {
-            return "鉴权失败：\(snippet)"
+            return "Authorization failed: \(snippet)"
         }
 
-        return "鉴权失败，请检查 API Key 和 Authorization 头。"
+        return "Authorization failed. Check the API key and Authorization header."
     }
 
     static func formattedTimeoutDetail(
@@ -111,22 +113,22 @@ private extension TranscriptionProviderError {
         let snippet = normalizedSnippet(diagnostics.responseSnippet ?? diagnostics.underlyingError)
 
         if let statusCode = diagnostics.statusCode, let snippet {
-            return "服务返回 \(statusCode)：\(snippet)"
+            return "The service returned \(statusCode): \(snippet)"
         }
 
         if let statusCode = diagnostics.statusCode {
-            return "服务返回 \(statusCode)，请求已超时。"
+            return "The service returned \(statusCode), and the request timed out."
         }
 
         if let snippet = normalizedSnippet(diagnostics.responseSnippet ?? diagnostics.underlyingError) {
             let lowered = snippet.lowercased()
             if lowered.contains("timed out") || lowered.contains("timeout") {
-                return "请求超时，请检查服务状态和网络连接。"
+                return "The request timed out. Check the service status and network connection."
             }
-            return "请求超时：\(snippet)"
+            return "The request timed out: \(snippet)"
         }
 
-        return "请求超时，请检查服务状态和网络连接。"
+        return "The request timed out. Check the service status and network connection."
     }
 
     static func isUnauthorized(_ diagnostics: ProviderTransportDiagnostics) -> Bool {
@@ -200,13 +202,15 @@ private extension TranscriptionProviderError {
         let mimeTypeDescription = normalizedSnippet(diagnostics.requestMimeType) ?? "nil"
         let snippetDescription = normalizedSnippet(diagnostics.responseSnippet) ?? "nil"
         let errorDescription = normalizedSnippet(diagnostics.underlyingError) ?? "nil"
-        return """
-        Provider transport failed. endpoint=\(diagnostics.endpoint) authHeaderPresent=\(diagnostics
-            .hasAuthorizationHeader) fileName=\(fileNameDescription) mimeType=\(
-            mimeTypeDescription
-        ) statusCode=\(statusDescription) responseSnippet=\(snippetDescription) underlyingError=\(
-            errorDescription
-        )
-        """
+        return [
+            "Provider transport failed.",
+            "endpoint=\(diagnostics.endpoint)",
+            "authHeaderPresent=\(diagnostics.hasAuthorizationHeader)",
+            "fileName=\(fileNameDescription)",
+            "mimeType=\(mimeTypeDescription)",
+            "statusCode=\(statusDescription)",
+            "responseSnippet=\(snippetDescription)",
+            "underlyingError=\(errorDescription)",
+        ].joined(separator: " ")
     }
 }

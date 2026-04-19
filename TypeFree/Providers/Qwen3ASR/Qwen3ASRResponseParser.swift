@@ -6,15 +6,15 @@ struct Qwen3ASRResponseParser {
               let payload = object as? [String: Any]
         else {
             throw TranscriptionProviderError.invalidResponse(
-                message: "Provider 返回的不是有效 JSON。"
+                message: "Provider did not return valid JSON."
             )
         }
 
         guard let text = extractedText(from: payload) else {
             let message = extractedMessage(from: payload) ?? normalizedSnippet(from: data)
             let detail = message.map {
-                "Provider 返回体缺少 output.choices[0].message.content[0].text 字段：\($0)"
-            } ?? "Provider 返回体缺少 output.choices[0].message.content[0].text 字段。"
+                "Provider response is missing the output.choices[0].message.content[0].text field: \($0)"
+            } ?? "Provider response is missing the output.choices[0].message.content[0].text field."
             throw TranscriptionProviderError.invalidResponse(message: detail)
         }
 

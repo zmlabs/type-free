@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum MainWindowSection: String, CaseIterable, Identifiable {
     case overview
@@ -11,7 +12,7 @@ enum MainWindowSection: String, CaseIterable, Identifiable {
         rawValue
     }
 
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .overview:
             "Overview"

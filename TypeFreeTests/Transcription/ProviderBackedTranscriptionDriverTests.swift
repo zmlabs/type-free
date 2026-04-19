@@ -20,7 +20,7 @@ struct ProviderBackedTranscriptionDriverTests {
 
         #expect(
             outcome == .providerFailed(
-                .configuration(detail: "未读取到有效的 API Key，请在 Provider 设置中重新输入并保存。")
+                .configuration(detail: "No valid API key was found. Please re-enter it in Provider Settings and save.")
             )
         )
         #expect(
@@ -67,7 +67,7 @@ struct ProviderBackedTranscriptionDriverTests {
 
         #expect(
             outcome == .providerFailed(
-                .unauthorized(detail: "服务返回 400：Missing Authorization header")
+                .unauthorized(detail: "The server returned 400: Missing Authorization header")
             )
         )
         #expect(

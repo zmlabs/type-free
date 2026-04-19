@@ -2,7 +2,7 @@
     import SwiftUI
 
     struct HUDCatalogView: View {
-        static let samples: [(label: String, state: HUDState)] = [
+        static let samples: [(label: LocalizedStringKey, state: HUDState)] = [
             ("tentativeCapture", .tentativeCapture),
             ("recording", .recording),
             ("transcribing", .transcribing),

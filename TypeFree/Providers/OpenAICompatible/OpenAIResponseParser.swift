@@ -6,14 +6,14 @@ struct OpenAIResponseParser {
               let payload = object as? [String: Any]
         else {
             throw TranscriptionProviderError.invalidResponse(
-                message: "Provider 返回的不是有效 JSON。"
+                message: "Provider returned invalid JSON."
             )
         }
 
         guard let text = payload["text"] as? String else {
             let message = extractedMessage(from: payload) ?? normalizedSnippet(from: data)
-            let detail = message.map { "Provider 返回体缺少 text 字段：\($0)" }
-                ?? "Provider 返回体缺少 text 字段。"
+            let detail = message.map { "Provider response body is missing the text field: \($0)" }
+                ?? "Provider response body is missing the text field."
             throw TranscriptionProviderError.invalidResponse(message: detail)
         }
 

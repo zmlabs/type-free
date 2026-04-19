@@ -11,6 +11,11 @@ nonisolated enum ProviderFailureCategory: String, Equatable {
 nonisolated struct ProviderFailure: Equatable {
     let category: ProviderFailureCategory
     let detail: String?
+
+    init(category: ProviderFailureCategory, detail: String? = nil) {
+        self.category = category
+        self.detail = detail
+    }
 }
 
 extension ProviderFailure {

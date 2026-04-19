@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 nonisolated enum ProviderKind: String, CaseIterable {
     case openAICompatible
@@ -7,11 +8,11 @@ nonisolated enum ProviderKind: String, CaseIterable {
 }
 
 extension ProviderKind {
-    nonisolated var title: String {
+    nonisolated var title: LocalizedStringKey {
         switch self {
         case .openAICompatible: "OpenAI Compatible"
         case .qwen3ASR: "Qwen3 ASR"
-        case .speechAnalyzer: "SpeechAnalyzer"
+        case .speechAnalyzer: "Built-in"
         }
     }
 

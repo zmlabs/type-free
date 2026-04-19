@@ -9,7 +9,7 @@ struct ProviderSettingsView: View {
 
             Section {
                 HStack {
-                    if !viewModel.saveMessage.isEmpty {
+                    if viewModel.saveMessage != "" {
                         Text(viewModel.saveMessage)
                             .font(.callout)
                             .foregroundStyle(

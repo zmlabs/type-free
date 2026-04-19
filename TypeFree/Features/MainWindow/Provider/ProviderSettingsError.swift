@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum ProviderSettingsError: Error, Equatable {
     case invalidBaseURL
@@ -17,7 +18,7 @@ enum ProviderSettingsSaveMessageLevel: Equatable {
 }
 
 extension ProviderSettingsError {
-    var message: String {
+    var message: LocalizedStringKey {
         switch self {
         case .invalidBaseURL:
             "Enter a valid HTTP or HTTPS transcription base URL."

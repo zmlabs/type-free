@@ -1,6 +1,7 @@
 import AppKit
 import Foundation
 import Observation
+import SwiftUI
 
 @MainActor @Observable
 final class AboutViewModel {
@@ -43,7 +44,7 @@ final class AboutViewModel {
         openURLAction = openURL
     }
 
-    var versionLabel: String {
+    var versionLabel: LocalizedStringKey {
         "Version \(appInfo.version)"
     }
 

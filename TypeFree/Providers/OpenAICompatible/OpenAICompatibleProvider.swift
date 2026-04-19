@@ -86,7 +86,7 @@ nonisolated struct AlamofireOpenAITransport: OpenAITransporting {
 
         guard let statusCode = response.response?.statusCode else {
             throw TranscriptionProviderError.invalidResponse(
-                message: "Provider 未返回 HTTP 状态码。"
+                message: "Provider did not return an HTTP status code."
             )
         }
 
@@ -101,7 +101,7 @@ nonisolated struct AlamofireOpenAITransport: OpenAITransporting {
 
         guard let data = response.data else {
             throw TranscriptionProviderError.invalidResponse(
-                message: "Provider 未返回响应体。"
+                message: "Provider did not return a response body."
             )
         }
 

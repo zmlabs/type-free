@@ -33,6 +33,12 @@ struct HUDViewModelTests {
     }
 
     @Test
+    func providerFailurePreservesDynamicDetailAsString() {
+        let failure = ProviderFailure.timeout(detail: "Server returned 504")
+        #expect(failure.detail == "Server returned 504")
+    }
+
+    @Test
     func hideClearsStateAndMessage() {
         let viewModel = HUDViewModel()
         viewModel.render(state: .transcribing)

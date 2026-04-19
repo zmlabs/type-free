@@ -1,6 +1,7 @@
 import AppKit
 import Foundation
 import Observation
+import SwiftUI
 
 struct HotkeyOption: Identifiable, Equatable {
     let configuration: HotkeyConfiguration
@@ -19,7 +20,7 @@ final class HotkeySettingsViewModel {
     let presetHotkeys = HotkeyConfiguration.supported.map(HotkeyOption.init(configuration:))
 
     private(set) var selectedHotkeyIdentifier = HotkeyConfiguration.default.identifier
-    private(set) var validationMessage: String?
+    private(set) var validationMessage: LocalizedStringKey?
     private(set) var lastPersistenceError: String?
     var isRecording = false
     var customHotkeyOption: HotkeyOption?

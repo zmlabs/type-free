@@ -9,7 +9,7 @@ struct HUDRootView: View {
     var body: some View {
         pill
             .frame(height: pillHeight)
-            .glassEffect(.regular, in: .capsule)
+            .glassEffect(.regular, in: .rect(cornerRadius: 13))
             .transition(.scale.combined(with: .opacity))
             .animation(.spring(duration: 0.35, bounce: 0.15), value: viewModel.state)
     }
@@ -23,11 +23,11 @@ struct HUDRootView: View {
         } else {
             HStack(spacing: 6) {
                 Image(systemName: symbolName)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(symbolColor)
                     .contentTransition(.symbolEffect(.replace))
 
-                Text(viewModel.message)
+                Text(verbatim: viewModel.message)
                     .font(.footnote.weight(.medium))
                     .id(viewModel.message)
                     .transition(.blurReplace)

@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import Speech
+import SwiftUI
 
 @MainActor @Observable
 final class SpeechAnalyzerAssetCoordinator {
@@ -8,7 +9,7 @@ final class SpeechAnalyzerAssetCoordinator {
         case idle
         case loading
         case loaded
-        case failed(String)
+        case failed(LocalizedStringKey)
     }
 
     private(set) var localeIdentifiers: [String] = []
@@ -16,7 +17,7 @@ final class SpeechAnalyzerAssetCoordinator {
     var selectedIdentifier: String?
     private(set) var isDownloading = false
     private(set) var downloadProgress: Double = 0
-    private(set) var statusMessage = ""
+    private(set) var statusMessage: LocalizedStringKey = ""
     private(set) var loadingState: LoadingState = .idle
 
     func loadLocales() async {
@@ -103,8 +104,8 @@ final class SpeechAnalyzerAssetCoordinator {
         downloadProgress = 0
     }
 
-    func displayName(for identifier: String) -> String {
+    func displayName(for identifier: String) -> LocalizedStringKey {
         let name = Locale.current.localizedString(forIdentifier: identifier) ?? identifier
-        return installedIdentifiers.contains(identifier) ? name : "\(name) ↓"
+        return installedIdentifiers.contains(identifier) ? LocalizedStringKey(name) : LocalizedStringKey("\(name) ↓")
     }
 }

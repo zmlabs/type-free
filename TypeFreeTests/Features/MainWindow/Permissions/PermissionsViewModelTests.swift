@@ -1,3 +1,4 @@
+import SwiftUI
 import Testing
 @testable import TypeFree
 
@@ -13,7 +14,7 @@ struct PermissionsViewModelTests {
 
         viewModel.refresh()
 
-        #expect(viewModel.readinessMessage.isEmpty)
+        #expect(viewModel.readinessMessage == "")
         #expect(viewModel.statusItems.count == 2)
         let allGranted = viewModel.statusItems.allSatisfy(\.isGranted)
         #expect(allGranted)

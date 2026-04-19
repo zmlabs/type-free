@@ -24,7 +24,9 @@ struct DictationWorkflowActorTests {
         #expect(
             hudPresenter.presentedStates == [
                 .providerFailed(
-                    .configuration(detail: "请在 Provider 设置中检查 Endpoint URL、模型标识和 API Key。")
+                    .configuration(
+                        detail: "Check the Endpoint URL, model identifier, and API key in Provider settings."
+                    )
                 ),
             ]
         )
@@ -76,7 +78,11 @@ struct DictationWorkflowActorTests {
         let hudPresenter = IntegrationTestHUDPresenter(activationScreenID: "screen-a")
         let captureDriver = WorkflowTestCaptureDriver()
         let transcriptionDriver = WorkflowTestTranscriptionDriver(
-            result: .success(.providerFailed(.timeout(detail: "请求超时，请检查服务状态和网络连接。")))
+            result: .success(
+                .providerFailed(
+                    .timeout(detail: "The request timed out. Check the service status and network connection.")
+                )
+            )
         )
         let clock = IntegrationTestWorkflowClock()
         let workflow = DictationWorkflowActor(
@@ -96,7 +102,9 @@ struct DictationWorkflowActorTests {
         #expect(
             hudPresenter.presentedStates == [
                 .transcribing,
-                .providerFailed(.timeout(detail: "请求超时，请检查服务状态和网络连接。")),
+                .providerFailed(
+                    .timeout(detail: "The request timed out. Check the service status and network connection.")
+                ),
             ]
         )
         #expect(hudPresenter.hideCallCount == 0)

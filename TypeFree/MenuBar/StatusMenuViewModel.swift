@@ -17,8 +17,8 @@ struct StatusMenuViewModel: Equatable {
             hasAudioInputDevice: hasAudioInputDevice,
             workflowPhase: workflowPhase
         )
-        openSettingsTitle = "Settings…"
-        quitTitle = "Quit"
+        openSettingsTitle = String(localized: "Settings…")
+        quitTitle = String(localized: "Quit")
     }
 
     nonisolated static func makeStatusTitle(
@@ -32,22 +32,22 @@ struct StatusMenuViewModel: Equatable {
         }
 
         if permissionSnapshot.microphone != .granted {
-            return "Microphone Required"
+            return String(localized: "Microphone Required")
         }
 
         if permissionSnapshot.accessibility != .granted {
-            return "Accessibility Required"
+            return String(localized: "Accessibility Required")
         }
 
         if !hasAudioInputDevice {
-            return "No Audio Input"
+            return String(localized: "No Audio Input Device")
         }
 
         if !hasActiveProvider {
-            return "Provider Not Configured"
+            return String(localized: "Provider Not Configured")
         }
 
-        return "Ready"
+        return String(localized: "Ready")
     }
 
     nonisolated static func runtimeStatusTitle(for workflowPhase: DictationPhase) -> String? {
@@ -55,25 +55,25 @@ struct StatusMenuViewModel: Equatable {
         case .idle:
             nil
         case .tentativeCapture, .recordingVisible:
-            "Recording"
+            String(localized: "recording")
         case .transcribing:
-            "Transcribing"
+            String(localized: "transcribing")
         case .canceled:
-            "Canceled"
+            String(localized: "canceled")
         case .noSpeech:
-            "No Speech"
+            String(localized: "noSpeech")
         case .permissionBlocked:
-            "Permission Blocked"
+            String(localized: "permissionBlocked")
         case .audioInputUnavailable:
-            "No Audio Input"
+            String(localized: "audioInputUnavailable")
         case .providerFailed:
-            "Provider Failed"
+            String(localized: "provider.unavailable")
         case .insertionFailed:
-            "Insertion Failed"
+            String(localized: "insertion.writeFailed")
         }
     }
 
     nonisolated static func updateMenuTitle(isUpdateAvailable: Bool) -> String {
-        isUpdateAvailable ? "Update Available" : "Check for Updates"
+        isUpdateAvailable ? String(localized: "Update Available") : String(localized: "Check for Updates")
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 @MainActor @Observable
 final class MainWindowRootViewModel {
@@ -30,7 +31,7 @@ final class MainWindowRootViewModel {
         self.aboutViewModel = aboutViewModel
     }
 
-    var navigationTitle: String {
+    var navigationTitle: LocalizedStringKey {
         selectedSection.title
     }
 

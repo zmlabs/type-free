@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 struct PermissionStatusItem: Identifiable, Equatable {
     enum Kind: Equatable {
@@ -8,8 +9,8 @@ struct PermissionStatusItem: Identifiable, Equatable {
     }
 
     let kind: Kind
-    let title: String
-    let statusText: String
+    let title: LocalizedStringKey
+    let statusText: LocalizedStringKey
     let isGranted: Bool
 
     var id: Kind {
@@ -19,7 +20,7 @@ struct PermissionStatusItem: Identifiable, Equatable {
 
 @MainActor @Observable
 final class PermissionsViewModel {
-    private(set) var readinessMessage = ""
+    private(set) var readinessMessage: LocalizedStringKey = ""
     private(set) var statusItems: [PermissionStatusItem] = []
 
     private let permissionStore: PermissionStore
@@ -102,7 +103,7 @@ final class PermissionsViewModel {
 
     private static func label(
         for state: PermissionAuthorizationState
-    ) -> String {
+    ) -> LocalizedStringKey {
         switch state {
         case .undetermined:
             "Not Set"
